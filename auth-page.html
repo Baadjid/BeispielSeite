@@ -280,6 +280,7 @@ let auth = null;
 if (ready) {
   const app = initializeApp(firebaseConfig);
   auth = getAuth(app);
+  auth.languageCode = 'de';
   await setPersistence(auth, browserLocalPersistence);
 }
 
@@ -354,6 +355,11 @@ window.doLogin = async () => {
   setLoad('loginBtn', true);
   try {
     const c = await signInWithEmailAndPassword(auth, email, pass);
+    if (!c.user.emailVerified) {
+      await auth.signOut();  // Sofort wieder ausloggen
+      showToast('login', '⚠ Bitte zuerst E-Mail bestätigen. Link wurde an ' + c.user.email + ' gesendet.', 'error');
+      return;
+    }
     showToast('login', '✓ Willkommen zurück, ' + c.user.email + '!', 'success');
     window.location.href = 'https://baadjid.github.io/Geschichte_und_Gemeinschaftskunde_ABI_Lernzettel/index.html'
   } catch(e) {
