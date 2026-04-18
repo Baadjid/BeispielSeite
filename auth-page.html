@@ -256,7 +256,7 @@ input.ok  { border-color:var(--ok); }
 <script type="module">
 import { initializeApp }                           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword,
-         createUserWithEmailAndPassword,
+         createUserWithEmailAndPassword, sendEmailVerification,
          setPersistence, browserLocalPersistence }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 // ════════════════════════════════════════════════════════
@@ -382,6 +382,7 @@ window.doRegister = async () => {
   setLoad('registerBtn', true);
   try {
     const c = await createUserWithEmailAndPassword(auth, email, pass);
+    await sendEmailVerification(c.user);
     showToast('register', '✓ Konto erstellt! Eingeloggt als ' + c.user.email, 'success');
     ['rEmail','rPass','rPass2'].forEach(id => document.getElementById(id).value = '');
     checkStrength('');
